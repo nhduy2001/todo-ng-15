@@ -1,0 +1,14 @@
+<h2>Danh sách công việc</h2>
+
+<!-- Two-way binding với ngModel -->
+<input [(ngModel)]="newTodo" placeholder="Nhập công việc mới" />
+<button (click)="addTodo()">Thêm</button>
+
+<ul>
+  <li *ngFor="let item of todos; let i = index">{{ i + 1 }}. {{ item }}</li>
+</ul>
+
+<p [ngStyle]="{ color: 'blue' }">Danh sách Todo</p>
+<p [ngClass]="{ highlight: todos.length > 3 }">
+  Có {{ todos.length }} công việc
+</p>
