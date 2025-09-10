@@ -1,0 +1,5 @@
+<li [ngStyle]="{ backgroundColor: isNew ? '#27F5DD' : '#f9f9f9' }">
+  {{ index + 1 }}.
+  <ng-content></ng-content>
+  <button (click)="remove()">Remove</button>
+</li>

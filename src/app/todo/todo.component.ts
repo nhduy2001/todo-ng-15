@@ -7,6 +7,7 @@ import {
   OnDestroy,
   OnInit,
 } from '@angular/core';
+import { TodoService } from '../todo.service';
 
 @Component({
   selector: 'app-todo',
@@ -16,18 +17,30 @@ import {
 export class TodoComponent
   implements OnInit, OnChanges, DoCheck, AfterViewInit, OnDestroy
 {
-  todos: string[] = ['Học Angular', 'Làm Todo App', 'Ôn Lifecycle Hooks'];
-
+  todos: string[] = [];
   newTodo = '';
+  lastAddedIndex: number | null = null;
+
+  constructor(private todoService: TodoService) {}
 
   addTodo() {
     if (this.newTodo.trim()) {
-      this.todos.push(this.newTodo);
-      this.newTodo = ''; // reset input
+      this.todoService.addTodo(this.newTodo);
+      this.lastAddedIndex = this.todos.length - 1;
+      this.newTodo = '';
     }
   }
 
+  removeTodo(index: number) {
+    this.todoService.removeTodo(index);
+  }
+
+  get taskLabel() {
+    return this.todos.length === 1 ? 'task' : 'tasks';
+  }
+
   ngOnInit() {
+    this.todos = this.todoService.getTodos();
     console.log('ngOnInit - Component initialized');
   }
 

@@ -1,14 +1,24 @@
-<h2>Danh sách công việc</h2>
+<div class="todo-container">
+  <h1>To-do App</h1>
 
-<!-- Two-way binding với ngModel -->
-<input [(ngModel)]="newTodo" placeholder="Nhập công việc mới" />
-<button (click)="addTodo()">Thêm</button>
+  <div class="todo-input">
+    <input type="text" [(ngModel)]="newTodo" placeholder="Add a new task" />
+    <button class="add-btn" (click)="addTodo()">Add</button>
+  </div>
+  <p *ngIf="todos.length === 0">No tasks yet. Add a new one!</p>
 
-<ul>
-  <li *ngFor="let item of todos; let i = index">{{ i + 1 }}. {{ item }}</li>
-</ul>
+  <ul>
+    <app-todo-item
+      *ngFor="let item of todos; let i = index"
+      [index]="i"
+      [isNew]="i === lastAddedIndex"
+      (removeItem)="removeTodo(i)"
+    >
+      {{ item }}
+    </app-todo-item>
+  </ul>
 
-<p [ngStyle]="{ color: 'blue' }">Danh sách Todo</p>
-<p [ngClass]="{ highlight: todos.length > 3 }">
-  Có {{ todos.length }} công việc
-</p>
+  <p [ngClass]="{ highlight: todos.length > 1 }">
+    You have {{ todos.length }} {{ taskLabel }}
+  </p>
+</div>
