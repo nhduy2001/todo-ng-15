@@ -2,12 +2,14 @@ import {
   AfterViewInit,
   Component,
   DoCheck,
-  Input,
   OnChanges,
   OnDestroy,
   OnInit,
 } from '@angular/core';
 import { TodoService } from '../todo.service';
+import { FormBuilder, Validators } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { uniqueTaskValidator } from '../validators/unique-task.validator';
 
 @Component({
   selector: 'app-todo',
@@ -21,13 +23,24 @@ export class TodoComponent
   newTodo = '';
   lastAddedIndex: number | null = null;
 
-  constructor(private todoService: TodoService) {}
+  constructor(
+    private formbuilder: FormBuilder,
+    private http: HttpClient,
+    private todoService: TodoService
+  ) {}
+
+  todoForm = this.formbuilder.group({
+    newTodo: [
+      '',
+      [Validators.required, Validators.minLength(3)],
+      [uniqueTaskValidator(this.http)],
+    ],
+  });
 
   addTodo() {
-    if (this.newTodo.trim()) {
-      this.todoService.addTodo(this.newTodo);
-      this.lastAddedIndex = this.todos.length - 1;
-      this.newTodo = '';
+    if (this.todoForm.valid) {
+      this.todoService.addTodo(this.todoForm.value.newTodo!);
+      this.todoForm.reset();
     }
   }
 
@@ -40,7 +53,7 @@ export class TodoComponent
   }
 
   ngOnInit() {
-    this.todos = this.todoService.getTodos();
+    this.todoService.todos$.subscribe((todos) => (this.todos = todos));
     console.log('ngOnInit - Component initialized');
   }
 

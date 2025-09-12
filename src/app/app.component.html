@@ -296,5 +296,9 @@
 </style>
 
 <div class="content" role="main">
-  <app-todo></app-todo>
+  <nav>
+    <a routerLink="/todos">Todos</a> |
+    <a routerLink="/about">About</a>
+  </nav>
+  <router-outlet></router-outlet>
 </div>

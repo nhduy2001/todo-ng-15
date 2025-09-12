@@ -2,9 +2,26 @@
   <h1>To-do App</h1>
 
   <div class="todo-input">
-    <input type="text" [(ngModel)]="newTodo" placeholder="Add a new task" />
-    <button class="add-btn" (click)="addTodo()">Add</button>
+    <form [formGroup]="todoForm" (ngSubmit)="addTodo()">
+      <input
+        type="text"
+        formControlName="newTodo"
+        placeholder="Add a new task"
+      />
+      <button type="submit" [disabled]="todoForm.invalid" class="add-btn">
+        Add
+      </button>
+    </form>
   </div>
+  <div style="color: red" *ngIf="todoForm.get('newTodo') as ctrl">
+    <div *ngIf="ctrl.hasError('minlength') && ctrl.touched">
+      Task must be at least 3 characters.
+    </div>
+    <div *ngIf="ctrl.hasError('taskExists')">
+      This task already exists on server!
+    </div>
+  </div>
+
   <p *ngIf="todos.length === 0">No tasks yet. Add a new one!</p>
 
   <ul>
@@ -14,11 +31,11 @@
       [isNew]="i === lastAddedIndex"
       (removeItem)="removeTodo(i)"
     >
-      {{ item }}
+      {{ item | uppercaseFirst }}
     </app-todo-item>
   </ul>
 
   <p [ngClass]="{ highlight: todos.length > 1 }">
-    You have {{ todos.length }} {{ taskLabel }}
+    You have total {{ todos.length | number }} {{ taskLabel }}
   </p>
 </div>
