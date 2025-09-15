@@ -22,13 +22,12 @@
     </div>
   </div>
 
-  <p *ngIf="todos.length === 0">No tasks yet. Add a new one!</p>
+  <p *ngIf="(todos$ | async)?.length === 0">No tasks yet. Add a new one!</p>
 
   <ul>
     <app-todo-item
-      *ngFor="let item of todos; let i = index"
+      *ngFor="let item of todos$ | async; let i = index"
       [index]="i"
-      [isNew]="i === lastAddedIndex"
       (removeItem)="removeTodo(i)"
     >
       {{ item | uppercaseFirst }}

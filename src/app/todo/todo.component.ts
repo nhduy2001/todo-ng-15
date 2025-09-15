@@ -8,8 +8,10 @@ import {
 } from '@angular/core';
 import { TodoService } from '../todo.service';
 import { FormBuilder, Validators } from '@angular/forms';
+import { Store } from '@ngrx/store';
 import { HttpClient } from '@angular/common/http';
 import { uniqueTaskValidator } from '../validators/unique-task.validator';
+import { addTodo, removeTodo } from '../state/todo/todo.actions';
 
 @Component({
   selector: 'app-todo',
@@ -19,6 +21,7 @@ import { uniqueTaskValidator } from '../validators/unique-task.validator';
 export class TodoComponent
   implements OnInit, OnChanges, DoCheck, AfterViewInit, OnDestroy
 {
+  todos$ = this.store.select('todos');
   todos: string[] = [];
   newTodo = '';
   lastAddedIndex: number | null = null;
@@ -26,7 +29,7 @@ export class TodoComponent
   constructor(
     private formbuilder: FormBuilder,
     private http: HttpClient,
-    private todoService: TodoService
+    private store: Store<{ todos: string[] }>
   ) {}
 
   todoForm = this.formbuilder.group({
@@ -39,13 +42,13 @@ export class TodoComponent
 
   addTodo() {
     if (this.todoForm.valid) {
-      this.todoService.addTodo(this.todoForm.value.newTodo!);
+      this.store.dispatch(addTodo({ task: this.todoForm.value.newTodo! }));
       this.todoForm.reset();
     }
   }
 
   removeTodo(index: number) {
-    this.todoService.removeTodo(index);
+    this.store.dispatch(removeTodo({ index }));
   }
 
   get taskLabel() {
@@ -53,7 +56,6 @@ export class TodoComponent
   }
 
   ngOnInit() {
-    this.todoService.todos$.subscribe((todos) => (this.todos = todos));
     console.log('ngOnInit - Component initialized');
   }
 
